@@ -1,35 +1,45 @@
-name: Build Flutter Release APK
+name: 构建 Flutter 发布 APK
+
 on:
   push:
     branches: [ main ]
 
 jobs:
   build_apk:
+    name: 主要的
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     steps:
-      - name: Checkout code
+      - name: 结账代码
         uses: actions/checkout@v4
 
-      - name: Setup Java 17
+      - name: 安装 Java 17
         uses: actions/setup-java@v4
         with:
           distribution: temurin
-          java-version: 17
+          java-version: '17'
+          cache: gradle
 
-      - name: Setup Flutter
+      - name: 设置 Flutter (3.22.0 → Dart3.4.0)
         uses: subosito/flutter-action@v2
         with:
           flutter-version: '3.22.0'
           channel: stable
+          cache: true
 
-      - name: Get dependencies
+      # ✅ 核心！自动生成全套新版Android V2工程，自动修复v1 embedding报错
+      - name: 自动生成Android宿主工程(V2)
+        run: flutter create . --platforms android
+
+      - name: 获取依赖项
         run: flutter pub get
 
-      - name: Build Release APK
+      - name: 构建发布 APK
         run: flutter build apk --release
 
-      - name: Upload APK Artifact
+      - name: 上传 APK 工件
         uses: actions/upload-artifact@v4
         with:
-          name: app-release
+          name: app-release-apk
           path: build/app/outputs/flutter-apk/app-release.apk
+          retention-days: 14
