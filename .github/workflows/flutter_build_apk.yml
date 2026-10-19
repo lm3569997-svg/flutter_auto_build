@@ -27,8 +27,12 @@ jobs:
           channel: stable
           cache: true
 
-      # ✅ 核心！自动生成全套新版Android V2工程，自动修复v1 embedding报错
-      - name: 自动生成Android宿主工程(V2)
+      # ✅【关键第一步】强制删除仓库残留旧V1 android目录！
+      - name: 删除旧的Android工程(V1)
+        run: rm -rf android
+
+      # ✅【关键第二步】全新生成 V2 Android工程
+      - name: 自动生成全新Android V2宿主工程
         run: flutter create . --platforms android
 
       - name: 获取依赖项
