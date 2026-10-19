@@ -20,28 +20,28 @@ jobs:
           java-version: '17'
           cache: gradle
 
-      - name: 设置 Flutter (3.22.0 → Dart3.4.0)
+      - name: 设置 Flutter 3.22.0
         uses: subosito/flutter-action@v2
         with:
           flutter-version: '3.22.0'
           channel: stable
           cache: true
 
-      # ✅【关键第一步】强制删除仓库残留旧V1 android目录！
-      - name: 删除旧的Android工程(V1)
+      # ✅ 重点！删掉仓库残留旧V1安卓工程（普通网上现成模板缺少这一行！）
+      - name: 清理旧Android文件夹
         run: rm -rf android
 
-      # ✅【关键第二步】全新生成 V2 Android工程
-      - name: 自动生成全新Android V2宿主工程
+      # ✅ 全新生成 V2 Android
+      - name: 生成全新Android V2工程
         run: flutter create . --platforms android
 
-      - name: 获取依赖项
+      - name: flutter pub get
         run: flutter pub get
 
-      - name: 构建发布 APK
+      - name: 构建 release APK
         run: flutter build apk --release
 
-      - name: 上传 APK 工件
+      - name: 上传成品APK
         uses: actions/upload-artifact@v4
         with:
           name: app-release-apk
